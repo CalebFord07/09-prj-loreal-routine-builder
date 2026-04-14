@@ -23,6 +23,7 @@ body {
   text-align: center;
   padding-top: 50px;
   padding-bottom: 10px;
+  position: relative;
 }
 
 .logo {
@@ -36,14 +37,32 @@ body {
   margin-bottom: 10px;
 }
 
+.rtl-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #ff003b;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.rtl-toggle:hover {
+  background: #e60032;
+}
+
 /* category filter */
 .search-section {
   margin: 30px 0;
   display: flex;
+  gap: 20px;
 }
 
-.search-section select {
-  width: 100%;
+.search-section select,
+.search-section input {
+  flex: 1;
   padding: 16px;
   font-size: 18px;
   border: 2px solid #000;
@@ -53,7 +72,8 @@ body {
   font-weight: 500;
 }
 
-.search-section select:focus {
+.search-section select:focus,
+.search-section input:focus {
   outline: none;
   border-color: #666;
 }
@@ -73,12 +93,102 @@ body {
 
 .chat-window {
   padding: 20px;
-  font-size: 18px;
-  line-height: 1.5;
-  height: 250px;
+  font-size: 15px;
+  line-height: 1.7;
+  height: 450px;
   overflow-y: auto;
-  background: #fafafa;
+  overflow-x: hidden;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  border: 1px solid #dee2e6;
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-behavior: smooth;
+}
+
+.chat-message {
+  padding: 14px 18px;
+  border-radius: 18px;
+  max-width: 85%;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
+  position: relative;
+  animation: fadeIn 0.3s ease-in;
+  display: inline-block;
+}
+
+.chat-message.user {
+  background: linear-gradient(135deg, #ff003b 0%, #e60032 100%);
+  color: white;
+  text-align: left;
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 2px 8px rgba(255, 0, 59, 0.3);
+}
+
+.chat-message.assistant {
+  background: linear-gradient(135deg, #e3a535 0%, #d4942a 100%);
+  color: #333;
+  text-align: left;
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(227, 165, 53, 0.3);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* sources and citations */
+.sources {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.source-link {
+  display: inline-block;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #0066cc;
+  text-decoration: none;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 102, 204, 0.3);
+  font-size: 0.85em;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  word-break: break-word;
+  margin: 4px 0;
+}
+
+.source-link:hover {
+  background: rgba(0, 102, 204, 0.1);
+  text-decoration: underline;
+  border-color: #0066cc;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+}
+
+.inline-link {
+  color: #0066cc;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.inline-link:hover {
+  color: #0052a3;
 }
 
 /* placeholder message */
@@ -135,17 +245,36 @@ body {
   outline-offset: 2px;
 }
 
-/* visually hidden */
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+/* RTL support */
+.rtl {
+  direction: rtl;
+}
+
+.rtl .search-section {
+  flex-direction: row-reverse;
+}
+
+.rtl .product-card {
+  flex-direction: row-reverse;
+}
+
+.rtl .chat-message.user {
+  text-align: right;
+  margin-left: 20%;
+  margin-right: auto;
+}
+
+.rtl .chat-message.assistant {
+  text-align: right;
+}
+
+.rtl .sources {
+  flex-direction: row-reverse;
+}
+
+.rtl .rtl-toggle {
+  left: 20px;
+  right: auto;
 }
 
 /* footer */
@@ -186,6 +315,17 @@ body {
   display: flex;
   gap: 15px;
   min-height: 160px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.product-card:hover {
+  border-color: #ff003b;
+}
+
+.product-card.selected {
+  border-color: #ff003b;
+  background-color: #fff5f5;
 }
 
 .product-card img {
@@ -211,6 +351,49 @@ body {
 .product-card p {
   font-size: 14px;
   color: #666;
+  margin-bottom: 10px;
+}
+
+.description-toggle {
+  background: #e3a535;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.description-toggle:hover {
+  background: #d4942a;
+}
+
+.product-description {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* show more */
+.show-more-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.show-more-btn {
+  background: #e3a535;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.show-more-btn:hover {
+  background: #d4942a;
 }
 
 /* selected products */
@@ -232,14 +415,64 @@ body {
   gap: 10px;
 }
 
-.generate-btn {
-  width: 100%;
-  margin-top: 20px;
+.selected-item {
+  background: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.remove-btn {
+  background: #ff003b;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-btn:hover {
+  background: #cc002e;
+}
+
+.selected-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.clear-btn {
+  flex: 1;
   padding: 16px;
   font-size: 18px;
   font-weight: 500;
   color: #fff;
-  background: #000;
+  background: #666;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.clear-btn:hover {
+  background: #555;
+}
+
+.generate-btn {
+  flex: 2;
+  margin-top: 0;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #fff;
+  background: #ff003b;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -247,7 +480,7 @@ body {
 }
 
 .generate-btn:hover {
-  background: #666;
+  background: #e60032;
 }
 
 .generate-btn i {
